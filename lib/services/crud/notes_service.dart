@@ -11,35 +11,21 @@ class NotesService {
 
   List<DatabaseNote> _notes = [];
 
-  DatabaseUser? _user;
-
   static final NotesService _shared = NotesService._sharedInstance();
-  NotesService._sharedInstance() {
-    _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
-      onListen: () {
-        _notesStreamController.sink.add(_notes);
-      },
-    );
-  }
+  NotesService._sharedInstance();
   factory NotesService() => _shared;
 
-  late final StreamController<List<DatabaseNote>> _notesStreamController;
+  final _notesStreamController =
+      StreamController<List<DatabaseNote>>.broadcast();
 
-  Future<DatabaseUser> getOrCreateUser({
-    required String email,
-    bool setAsCurrentUser = true,
-  }) async {
+  Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
+
+  Future<DatabaseUser> getOrCreateUser({required String email}) async {
     try {
       final user = await getUser(email: email);
-      if (setAsCurrentUser) {
-        _user = user;
-      }
       return user;
     } on CouldNotFindUser {
       final createdUser = await createUser(email: email);
-      if (setAsCurrentUser) {
-        _user = createdUser;
-      }
       return createdUser;
     } catch (e) {
       rethrow;
@@ -63,15 +49,10 @@ class NotesService {
     await getNote(id: note.id);
 
     // update DB
-    final updatesCount = await db.update(
-      noteTable,
-      {
-        textColumn: text,
-        isSyncedWithCloudColumn: 0,
-      },
-      where: 'id = ?',
-      whereArgs: [note.id],
-    );
+    final updatesCount = await db.update(noteTable, {
+      textColumn: text,
+      isSyncedWithCloudColumn: 0,
+    });
 
     if (updatesCount == 0) {
       throw CouldNotUpdateNote();
