@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/crud/notes_service.dart';
 import 'package:mynotes/utilities/generics/get_arguments.dart';
@@ -91,6 +92,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('New Note'),
+        centerTitle: true,
       ),
       body: FutureBuilder(
         future: createOrGetExistingNote(context),
@@ -98,12 +100,22 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               _setupTextControllerListener();
-              return TextField(
-                controller: _textController,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                decoration: const InputDecoration(
-                    hintText: 'Start typing your note...'),
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _textController,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  style: GoogleFonts.raleway(
+                    textStyle: const TextStyle(letterSpacing: .4),
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'Start typing your note...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
               );
             default:
               return const CircularProgressIndicator();

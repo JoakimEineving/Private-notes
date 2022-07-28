@@ -6,6 +6,7 @@ import 'package:mynotes/views/notes/create_update_note_view.dart';
 import 'package:mynotes/views/notes/notes_view.dart';
 import 'package:mynotes/views/register_view.dart';
 import 'package:mynotes/views/verify_email_view.dart';
+import 'package:mynotes/views/forgot_password_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,15 +14,17 @@ void main() {
     MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blueGrey,
       ),
       home: const HomePage(),
+      debugShowCheckedModeBanner: false,
       routes: {
         loginRoute: (context) => const LoginView(),
         registerRoute: (context) => const RegisterView(),
         notesRoute: (context) => const NotesView(),
         verifyEmailRoute: (context) => const VerifyEmailView(),
         createOrUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
+        forgotPasswordRoute: (context) => const ForgotPasswordView(),
       },
     ),
   );
