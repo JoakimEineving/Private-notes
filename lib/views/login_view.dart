@@ -33,130 +33,193 @@ class _HomePageState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text('Login')),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset('images/notes.jpg'),
-            const SizedBox(height: 10.0),
-            const Text(
-              "Welcome back.",
-              style: TextStyle(
-                  color: Colors.blueGrey,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 50),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text(
-              "You've been missed!",
-              style: TextStyle(
-                  color: Colors.blueGrey,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 20),
-            ),
-            const SizedBox(
-              height: 100,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextField(
-                controller: _email,
-                enableSuggestions: false,
-                autocorrect: false,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: 'Enter your email here',
-                  prefixIcon: const Icon(Icons.email),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
+      backgroundColor: Colors.grey[300],
+      body: Center(
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.android,
+                  size: 200,
+                ),
+                const SizedBox(height: 50),
+                Text(
+                  "Hello Again!",
+                  style: GoogleFonts.bebasNeue(
+                    fontSize: 52,
                   ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 20, top: 10, right: 20, bottom: 10),
-              child: TextField(
-                controller: _password,
-                obscureText: true,
-                enableSuggestions: false,
-                autocorrect: false,
-                decoration: InputDecoration(
-                  hintText: 'Enter your password here',
-                  prefixIcon: const Icon(Icons.lock),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
+                const SizedBox(height: 10),
+                const Text(
+                  "Welcome back, you've been missed!",
+                  style: TextStyle(
+                    fontSize: 20,
                   ),
                 ),
-              ),
+                const SizedBox(height: 50),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: TextField(
+                        controller: _email,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(
+                          hintText: 'Email',
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: TextField(
+                        controller: _password,
+                        obscureText: true,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        decoration: const InputDecoration(
+                          hintText: 'Password',
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                // TextField(
+                const SizedBox(height: 10),
+                // ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.deepOrange,
+                        fixedSize: const Size(400, 50),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12))),
+                    onPressed: () async {
+                      final email = _email.text;
+                      final password = _password.text;
+                      try {
+                        await AuthService.firebase().logIn(
+                          email: email,
+                          password: password,
+                        );
+                        final user = AuthService.firebase().currentUser;
+                        if (user?.isEmailVerified ?? false) {
+                          //user's email IS verified
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            notesRoute,
+                            (route) => false,
+                          );
+                        } else {
+                          //user's email NOT verified
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            verifyEmailRoute,
+                            (route) => false,
+                          );
+                        }
+                      } on UserNotFoundAuthException {
+                        await showErrorDialog(
+                          context,
+                          'User not found',
+                        );
+                      } on WrongPasswordAuthException {
+                        await showErrorDialog(
+                          context,
+                          'Wrong password',
+                        );
+                      } on GenericAuthException {
+                        await showErrorDialog(
+                          context,
+                          'Authentication error',
+                        );
+                      }
+                    },
+                    child: const Text(
+                      'Sign In',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Not registered yet?',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          registerRoute,
+                          (route) => false,
+                        );
+                      },
+                      child: const Text(
+                        'Register now',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Forgot your password?',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          forgotPasswordRoute,
+                          (route) => false,
+                        );
+                      },
+                      child: const Text(
+                        'Reset password',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            ElevatedButton(
-              onPressed: () async {
-                final email = _email.text;
-                final password = _password.text;
-                try {
-                  await AuthService.firebase().logIn(
-                    email: email,
-                    password: password,
-                  );
-                  final user = AuthService.firebase().currentUser;
-                  if (user?.isEmailVerified ?? false) {
-                    //user's email IS verified
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      notesRoute,
-                      (route) => false,
-                    );
-                  } else {
-                    //user's email NOT verified
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      verifyEmailRoute,
-                      (route) => false,
-                    );
-                  }
-                } on UserNotFoundAuthException {
-                  await showErrorDialog(
-                    context,
-                    'User not found',
-                  );
-                } on WrongPasswordAuthException {
-                  await showErrorDialog(
-                    context,
-                    'Wrong password',
-                  );
-                } on GenericAuthException {
-                  await showErrorDialog(
-                    context,
-                    'Authentication error',
-                  );
-                }
-              },
-              child: const Text('Login'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  registerRoute,
-                  (route) => false,
-                );
-              },
-              child: const Text('Not registered yet? Register here!'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  forgotPasswordRoute,
-                  (route) => false,
-                );
-              },
-              child: const Text('Reset Password'),
-            ),
-          ],
+          ),
         ),
       ),
     );
