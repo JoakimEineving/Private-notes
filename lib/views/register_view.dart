@@ -183,7 +183,8 @@ class _RegisterViewState extends State<RegisterView> {
                     ),
                   ),
                 ],
-              )
+              ),
+              const SizedBox(height: 40),
             ],
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/enums/menu_action.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
@@ -27,8 +28,13 @@ class _NotesViewState extends State<NotesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
-        title: const Text('Your Notes'),
+        backgroundColor: Colors.deepOrange,
+        title: Text(
+          'Your Notes',
+          style: GoogleFonts.bebasNeue(fontSize: 30),
+        ),
         centerTitle: true,
         actions: [
           IconButton(
@@ -62,6 +68,14 @@ class _NotesViewState extends State<NotesView> {
           )
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.deepOrange,
+        child: const Icon(Icons.add),
+        onPressed: () {
+          Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: StreamBuilder(
         stream: _notesService.allNotes(ownerUserId: userId),
         builder: (context, snapshot) {
