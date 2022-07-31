@@ -93,8 +93,15 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
-        title: const Text('New Note'),
+        backgroundColor: Colors.deepOrange,
+        title: Text(
+          'New Note',
+          style: GoogleFonts.bebasNeue(
+            fontSize: 30,
+          ),
+        ),
         centerTitle: true,
         actions: [
           IconButton(
@@ -134,7 +141,11 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                 ),
               );
             default:
-              return const CircularProgressIndicator();
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.deepOrange,
+                ),
+              );
           }
         },
       ),
